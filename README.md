@@ -10,7 +10,7 @@ isolates the whiskers, points the camera at them, plays a demo and shows a spec 
 Clearance gauge compares whisker span with the opening before entry, and the result is
 advisory.
 
-**[Open the demo](https://youtiger.github.io/CatsInsight/)**
+**[Open the demo](https://wisdomousai.github.io/robot-cats/)**
 
 ![The showcase with x-ray on: Pixel drawn through the other cats, the console panels round the stage](docs/screenshot.png)
 

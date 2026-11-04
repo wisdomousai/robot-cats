@@ -5,10 +5,10 @@
   "type": "module",
   "description": "Detailed toy-robot cats, built from code in three.js, with a showcase page that explains cat clichés as robot subsystems.",
   "license": "MIT",
-  "author": "Philipp Utiger",
+  "author": "wisdomousai",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/youtiger/CatsInsight.git"
+    "url": "git+https://github.com/wisdomousai/robot-cats.git"
   },
   "scripts": {
     "dev": "vite",
