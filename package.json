@@ -1,0 +1,32 @@
+{
+  "name": "robot-cats",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Detailed toy-robot cats, built from code in three.js, with a showcase page that explains cat clichés as robot subsystems.",
+  "license": "MIT",
+  "author": "Philipp Utiger",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/youtiger/CatsInsight.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "check": "tsc --noEmit && node tools/determinism.mjs",
+    "build": "node build.mjs",
+    "stills": "node tools/stills.mjs",
+    "fps": "node tools/fps.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/newsreader": "5.3.0",
+    "@fontsource-variable/schibsted-grotesk": "5.3.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@types/three": "0.187.0",
+    "esbuild": "0.28.2",
+    "playwright": "1.58.2",
+    "typescript": "7.0.2",
+    "vite": "8.3.5"
+  }
+}
