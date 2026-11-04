@@ -1,0 +1,521 @@
+/*
+ * The showcase's controls in the creatures playground's style: its tokens (--paper,
+ * --card, --ink, --rule…), its two faces, a frame round the window, pill keys that fill
+ * with ink when pressed, cards pinned a little crooked, and a menu of tricks at the pointer.
+ */
+:root {
+  --paper: #f4f4f1;
+  --paper-deep: #e9e9e5;
+  --card: #fff;
+  --ink: #111;
+  --ink-soft: #55554f;
+  --ink-faint: #6e6e68;
+  --rule: #e0e0db;
+  --rule-strong: #d6d6d1;
+  --shade: rgb(0 0 0 / 0.1);
+  --frame-inset: 12px;
+  --frame-radius: 24px;
+  --pad: calc(var(--frame-inset) + 1.4rem);
+  --serif: 'Newsreader', Georgia, serif;
+  --sans: 'Schibsted Grotesk', system-ui, sans-serif;
+}
+
+.ui {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  color: var(--ink);
+  font:
+    15px/1.5 var(--sans),
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.ui :is(button, a, input, label, .trick-menu, .settings, .spec) {
+  pointer-events: auto;
+}
+.ui button {
+  font: inherit;
+  color: inherit;
+}
+.ui a {
+  color: inherit;
+}
+.ui :focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.ui [hidden] {
+  display: none !important;
+}
+
+.frame {
+  position: fixed;
+  inset: var(--frame-inset);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--frame-radius);
+}
+
+/* The heading in the top left corner. */
+.head {
+  position: fixed;
+  top: calc(var(--frame-inset) + 1.1rem);
+  left: var(--pad);
+  max-width: 24rem;
+}
+.head h1 {
+  margin: 0;
+  font: 600 2.2rem/1.1 var(--serif);
+}
+.lede {
+  margin: 0.4rem 0 0;
+  color: var(--ink-soft);
+}
+
+/* Keys: pills; pressed ones are filled with ink. */
+.key {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: var(--card);
+  font-size: 0.85rem;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    color 0.12s;
+}
+.key:hover,
+.key.hover {
+  border-color: var(--ink);
+}
+.key.on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--card);
+}
+.num {
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+}
+.key.on .num {
+  color: var(--rule-strong);
+}
+
+/* The top right corner: the tour, and the settings key with its card under it. */
+.corner {
+  position: fixed;
+  top: calc(var(--frame-inset) + 0.9rem);
+  right: calc(var(--frame-inset) + 0.9rem);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.settings-key {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--ink-soft);
+  box-shadow: 0 1px 2px var(--shade);
+  cursor: pointer;
+}
+.settings-key:hover,
+.settings-key[aria-expanded='true'] {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.settings-key svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.settings-key circle {
+  fill: var(--card);
+}
+.settings {
+  position: fixed;
+  top: calc(var(--frame-inset) + 3.7rem);
+  right: calc(var(--frame-inset) + 0.9rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.8rem 0.9rem 0.7rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 0.55rem;
+  background: var(--card);
+  box-shadow: 0 10px 28px -12px rgb(0 0 0 / 0.35);
+  font-size: 0.85rem;
+}
+.choice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+.choice-name {
+  min-width: 3.1rem;
+  margin-right: 0.3rem;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+.slider {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.6rem;
+  font-size: 0.85rem;
+}
+.slider input {
+  width: 9rem;
+  margin: 0;
+  accent-color: var(--ink);
+}
+.hint {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+}
+
+/* The selected subsystem's spec sheet, pinned on the right. */
+.spec {
+  position: fixed;
+  top: 50%;
+  right: var(--pad);
+  translate: 0 -62%;
+  box-sizing: border-box;
+  width: min(21rem, 34vw);
+  padding: 1.2rem 1.1rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px var(--shade);
+  rotate: 0.6deg;
+}
+.spec-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.spec h2 {
+  margin: 0;
+  font: 600 1.35rem/1.2 var(--serif);
+}
+.spec-id {
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+}
+.spec-line {
+  margin: 0.4rem 0 0.8rem;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+.spec-rows {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  margin: 0;
+  font-size: 0.85rem;
+}
+.spec-rows dt,
+.spec-rows dd {
+  margin: 0;
+  padding: 0.3rem 0;
+  border-top: 1px solid var(--rule);
+}
+.spec-rows dd {
+  padding-left: 1rem;
+  font-weight: 600;
+  text-align: right;
+}
+.spec-demo {
+  margin: 0.7rem 0 0;
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+}
+.pin {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  margin-left: -5.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--ink-faint), var(--ink) 60%);
+  box-shadow: 0 2px 2px var(--shade);
+}
+
+/* The line from the isolated parts to the sheet. */
+.leader {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.leader.shown {
+  opacity: 1;
+}
+.leader path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+.leader circle {
+  fill: var(--card);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+/* The tour's caption, above the dock. */
+.caption {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--frame-inset) + 12.4rem);
+  translate: -50% 0;
+  max-width: min(40rem, 70vw);
+  margin: 0;
+  padding: 0.35rem 1rem 0.35rem 1.7rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: 0 4px 14px -6px rgb(0 0 0 / 0.3);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.caption::before {
+  content: '';
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--rule-strong);
+}
+.caption.touring::before {
+  background: var(--ink);
+}
+
+/* Name tags over the cats. */
+.tag {
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 0.05rem 0.5rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.9);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  will-change: transform;
+}
+.tag.on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--card);
+}
+
+/* The dock along the bottom: the cats' cards, then the subsystem keys. */
+.dock {
+  position: fixed;
+  left: var(--pad);
+  right: var(--pad);
+  bottom: calc(var(--frame-inset) + 1.1rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.cards {
+  margin-bottom: 0.4rem;
+}
+.cards {
+  display: flex;
+  gap: 1rem;
+}
+.card {
+  position: relative;
+  display: block;
+  width: 13rem;
+  padding: 0.85rem 0.9rem 0.7rem;
+  background: var(--card);
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  text-align: left;
+  rotate: var(--turn, 0deg);
+  box-shadow: 0 1px 2px var(--shade);
+  cursor: pointer;
+  transition:
+    translate 0.25s cubic-bezier(0.3, 1.6, 0.5, 1),
+    box-shadow 0.25s,
+    border-color 0.15s;
+}
+.card:hover,
+.card.hover {
+  translate: 0 -3px;
+  box-shadow: 0 6px 14px var(--shade);
+}
+.card.on {
+  border-color: var(--ink);
+}
+.card .pin {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.card.on .pin {
+  opacity: 1;
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.swatch {
+  width: 10px;
+  height: 10px;
+  border: 1px solid;
+  border-radius: 50%;
+}
+.card-name {
+  font: 600 1.15rem/1.2 var(--serif);
+}
+.card-line {
+  display: block;
+  margin-top: 0.2rem;
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+.row-name {
+  min-width: 6.6rem;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+.games-name {
+  min-width: 0;
+  margin: 0 0.3rem 0 1rem;
+}
+
+.foot {
+  position: fixed;
+  right: var(--pad);
+  bottom: calc(var(--frame-inset) + 0.3rem);
+  margin: 0;
+  color: var(--ink-faint);
+  font-size: 0.72rem;
+}
+.foot a {
+  text-decoration: none;
+}
+.foot a:hover {
+  text-decoration: underline;
+}
+
+/* A cat's tricks, at the pointer: its name, a key per trick, and its coat. */
+.trick-menu {
+  position: fixed;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(27rem, calc(100vw - 24px));
+  padding: 0.6rem 0.6rem 0.55rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 0.55rem;
+  background: var(--card);
+  box-shadow: 0 10px 28px -12px rgb(0 0 0 / 0.35);
+}
+.trick-menu-name {
+  margin: 0 0.15rem 0.45rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+.trick-menu-items {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(4.6rem, 1fr));
+  gap: 0.3rem;
+  margin-bottom: 0.6rem;
+}
+.trick {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 0.3rem;
+  background: var(--card);
+  box-shadow: 0 2px 0 var(--rule-strong);
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.08s,
+    box-shadow 0.08s;
+}
+.trick:hover,
+.trick.hover {
+  background: var(--paper-deep);
+}
+.trick:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 var(--rule-strong);
+}
+.trick.on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--card);
+}
+.trick-menu .choice-name {
+  min-width: 0;
+  font-size: 12px;
+}
+.trick-menu .key {
+  font-size: 12px;
+}
+
+@media (max-width: 52rem) {
+  .head {
+    max-width: 16rem;
+  }
+  .head h1 {
+    font-size: 1.7rem;
+  }
+  .lede {
+    font-size: 0.85rem;
+  }
+  .card {
+    width: auto;
+    flex: 1;
+  }
+  .spec {
+    top: auto;
+    bottom: calc(var(--frame-inset) + 15rem);
+    translate: none;
+    width: min(21rem, calc(100vw - 2 * var(--pad)));
+  }
+  .caption {
+    display: none;
+  }
+}

@@ -10,8 +10,7 @@ import { GAME_NAMES, type BreedId, type CatModel, type Counters, type GameName, 
 /**
  * The cats' world: the three cats, the toys and props, the director that runs group games,
  * the session counters and the fake wall clock. `step(dt, input)` applies the page's input
- * and advances everything by dt; `readout()` gives the plain data the console draws, in the
- * same shape as src/dev/mock-readout.ts.
+ * and advances everything by dt; `readout()` gives the plain data the console draws.
  *
  * Input follows the console's conventions. A subsystem button sends only `{ subsystem }`,
  * and the world starts that row's demo act on the selected cat; while the subsystem stays

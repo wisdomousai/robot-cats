@@ -288,6 +288,8 @@ export interface Live {
   floor(): V3 | null;
   /** Stop the tour and restart the idle timer, as any visitor input does. */
   takeover(): void;
+  /** A visitor pressed a button: the tour key starts or stops the tour, any other takes over. */
+  press(id: string, value?: number): void;
   /** Call once per frame with page time: fling, idle timer, tour state for the console. */
   update(t: number, dt: number): void;
   dispose(): void;
@@ -317,6 +319,18 @@ export function createLive(opts: LiveOptions): Live {
     if (player.running) player.stop(now);
   };
 
+  const press = (id: string, value?: number) => {
+    if (id === 'tour') {
+      lastInput = now;
+      if (player.running) player.stop(now);
+      else {
+        stage.resetOrbit();
+        player.resume(now);
+      }
+    } else takeover();
+    controls.press(id, value);
+  };
+
   const setHover = (x: number, y: number) => {
     const hit = con.hit(x, y);
     ui.hover = hit?.id ?? null;
@@ -326,27 +340,20 @@ export function createLive(opts: LiveOptions): Live {
   const onDown = (e: PointerEvent) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     const hit = con.hit(e.clientX, e.clientY);
-    if (hit?.id === 'tour') {
-      lastInput = now;
-      if (player.running) player.stop(now);
-      else {
-        stage.resetOrbit();
-        player.resume(now);
-      }
-      controls.press('tour');
+    if (hit?.id === 'explode') {
+      takeover();
+      sliding = e.pointerId;
+      el.setPointerCapture(e.pointerId);
+      controls.press('explode', hit.value);
+      e.preventDefault();
+      return;
+    }
+    if (hit) {
+      press(hit.id);
       e.preventDefault();
       return;
     }
     takeover();
-    if (hit) {
-      if (hit.id === 'explode') {
-        sliding = e.pointerId;
-        el.setPointerCapture(e.pointerId);
-        controls.press('explode', hit.value);
-      } else controls.press(hit.id);
-      e.preventDefault();
-      return;
-    }
     drag = { id: e.pointerId, x: e.clientX, y: e.clientY, at: e.timeStamp, vx: 0, vy: 0 };
     fling.az = 0;
     fling.el = 0;
@@ -441,6 +448,7 @@ export function createLive(opts: LiveOptions): Live {
       return stage.screenToFloor(pointer.x - rect.left, pointer.y - rect.top);
     },
     takeover,
+    press,
     update(t, dt) {
       now = t;
       ui.time = t;

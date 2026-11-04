@@ -135,7 +135,7 @@ function buildScript(): { script: Beat[]; duration: number } {
     caption: 'Three robot cats on a floor 3 m wide and 2 m deep.',
     input: { resetCounters: true },
   });
-  add({ name: 'select-pixel', target: 'cat:tabby', hold: 4, caption: 'Pixel, the tabby, is selected. The panels show the selected cat.' });
+  add({ name: 'select-pixel', target: 'cat:tabby', hold: 4, caption: 'Pixel, the tabby, is selected.' });
 
   for (const s of SUBSYSTEMS) {
     toView(SUBSYSTEM_VIEW[s.id] ?? 'three-quarter');

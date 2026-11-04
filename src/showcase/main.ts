@@ -4,11 +4,12 @@
 // seed, `?tier=N` pins a quality tier and `?debug` puts the tour on window.__film and the
 // fps samples on window.__perf.
 import { Box3, Vector3 } from 'three';
-import { createProps, syncProps, type ToyKind, type V3, type WorldReadout } from '../cats/index';
+import { createProps, syncProps, type BreedId, type ToyKind, type V3, type WorldReadout } from '../cats/index';
 import { createConsole } from './console';
 import { createCursor } from './cursor';
 import { createEngine, recoat } from './engine';
 import { loadFonts } from './fonts';
+import './showcase.css';
 import { createPlayer, exposeFilm, type FilmHost } from './film';
 import { createControls, createLive } from './live';
 import { createGovernor, perfLog, startTier, type TierId } from './quality';
@@ -49,8 +50,8 @@ const toyPoint = (kind: ToyKind): V3 => {
   return [...toys.get(kind).position] as V3;
 };
 
-// Frame the whole play area so the console's side columns do not cover it.
-stage.fit(new Box3(new Vector3(-STUDIO.play.x, 0, -STUDIO.play.z), new Vector3(STUDIO.play.x, 0.55, STUDIO.play.z)), 0.56);
+// Frame the whole play area, with room for the heading above it and the dock below.
+stage.fit(new Box3(new Vector3(-STUDIO.play.x, 0, -STUDIO.play.z), new Vector3(STUDIO.play.x, 0.55, STUDIO.play.z)), 0.66);
 
 /**
  * The world keeps cats that wait out a demo off the line between the demo cat and the
@@ -72,7 +73,9 @@ placeOwner();
 engine.world.eye = () => stage.eye();
 
 await loadFonts();
-const con = createConsole(overlay);
+// The console's keys reach the page through `live`, which is made after the player that
+// needs the console; nobody can press a key before the page has finished starting.
+const con = createConsole(overlay, { onPress: (id, value) => live.press(id, value) });
 const cursor = createCursor(overlay, { accent: INK });
 const controls = createControls({ stage, models, recoat });
 const ui = controls.ui;
@@ -120,6 +123,25 @@ const host: FilmHost = {
 
 const player = createPlayer({ cursor, console: con, host });
 const live = createLive({ stage, console: con, controls, player, cursor });
+
+// Right-click a cat on the stage for its tricks: the cat whose middle is nearest the pointer.
+canvas.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  let best: BreedId | null = null;
+  let bestD = 110;
+  for (const c of engine.state().cats) {
+    const [x, y] = stage.project([c.position[0], 0.25, c.position[2]]);
+    const d = Math.hypot(x + rect.left - e.clientX, y + rect.top - e.clientY);
+    if (d < bestD) {
+      best = c.id;
+      bestD = d;
+    }
+  }
+  if (!best) return;
+  live.press(`cat:${best}`);
+  con.tricks(best, e.clientX + 12, e.clientY - 24);
+});
 exposeFilm(player);
 // Scripted checks read the console's button rectangles and the world from here.
 if (params.has('debug')) Object.assign(window, { __showcase: { stage, engine, con, controls, live, player } });

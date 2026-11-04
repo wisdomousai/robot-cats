@@ -12,7 +12,7 @@ advisory.
 
 **[Open the demo](https://wisdomousai.github.io/robot-cats/)**
 
-![The showcase with x-ray on: Pixel drawn through the other cats, the console panels round the stage](docs/screenshot.png)
+![The showcase with the ears subsystem picked: Pixel's ears isolated, their spec sheet pinned on the right, and the cat cards, trick keys and subsystem keys along the bottom](docs/screenshot.png)
 
 ## Running it
 
@@ -21,19 +21,21 @@ npm install
 npm run dev
 ```
 
-Open the address Vite prints. When nobody touches the page, a tour presses the buttons with a
+Open the address Vite prints. When nobody touches the page, a tour presses the keys with a
 fake cursor and explains each one in a caption. Any input pauses the tour, and it carries on
-a few seconds after the last input.
+25 seconds after the last input.
 
 | Input | What it does |
 | --- | --- |
 | Drag | Orbit the camera |
 | Wheel | Zoom |
 | Keys 1 to 6 | Camera views: 3/4, front, side, top, head, follow |
-| Cat cards | Select a cat; the panels show the selected cat |
-| Behaviour row | Make the selected cat walk, sit, pounce, sleep, or start a group game |
-| Subsystem row | Isolate a subsystem and show its spec sheet |
-| X-ray, Explode | Draw the selected cat through everything, or move each part out along its own direction |
+| Cat cards | Select a cat |
+| Tricks row | Make the selected cat walk, sit, pounce, groom, sleep and so on |
+| Games row | Start a game for all three: laser, chase, wrestle, tag, yarn |
+| Right-click a cat or its card | The same tricks at the pointer, and the cat's coat |
+| Subsystem keys | Isolate a subsystem and pin its spec sheet |
+| Settings key | Camera views, x-ray (the selected cat drawn through everything), and explode (each part moved out along its own direction) |
 
 URL options: `?seed=N` picks the world's seed, `?tier=N` pins a quality tier (0 is the
 highest), and `?debug` exposes the tour and fps samples on `window`.
@@ -67,13 +69,12 @@ same seed always plays the same way.
 | `src/cats/brain` | Moods, acts, steering, toys and the group games |
 | `src/cats/face` | The screen face: eyes, blinks and expressions |
 | `src/cats/cliches.ts` | The subsystem table: every button, spec sheet and tour beat comes from it |
-| `src/showcase` | The page: stage, console, live input, tour, cursor and quality tiers |
-| `src/dev` | Check pages for the geometry, props, world and console |
+| `src/showcase` | The page: stage, controls, live input, tour, cursor and quality tiers |
+| `src/dev` | Check pages for the geometry, props and world |
 | `tools` | Screenshot, fps and determinism scripts (Playwright) |
 
-The check pages are `stage.html`, `world.html`, `console.html`, `gallery.html` and
-`props.html`. `docs/conventions.md` lists the axes, bone names and material roles the code
-follows.
+The check pages are `stage.html`, `world.html`, `gallery.html` and `props.html`.
+`docs/conventions.md` lists the axes, bone names and material roles the code follows.
 
 ## Credits
 
